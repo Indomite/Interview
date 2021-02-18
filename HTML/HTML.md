@@ -80,3 +80,20 @@
   <!-- 为移动设备添加 viewport -->
   <meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
 ```
+
+## HTML5有哪些新特性
+
+- **语义化标签** <br/>
+8组：header、nav、footer、section、aside、artice、detailes、summary、dialog（对话框）
+- **智能表单** <br/>
+1.input输入类型增多<br/>
+color(颜色选取)、date、datetime（UTC时间）、datetime-local（日期时间无时区）、email、month、number、range（一定范围内数字值）、search、tel（电话号码）、time、url、week <br/>
+2.新增表单元素 <br/>
+datalist（输入域选项列表）keygen(验证用户)、output（不同类型输出）
+3.新增表单属性
+placehoder（提示语）、required（boolean，不能为空）、pattern(正则)、min/max、step(合法数字间隔）、height/width(image高宽)、autofocus(boolean，自动获取焦点)、mutiple（boolean,多选）
+
+## src和href的区别
+
+- href指向网络资源位置，建立当前文档和资源的连接，一般用于超链接
+- src将资源放入当前的文档，在请求src资源的时候会将指向的资源下载并应用到文档中，比如说js、图片等等元素，浏览器解析到该元素的时候会暂停其他资源的下载和处理，类似于将资源嵌入到了标签内，这也是js放在底部的一个原因
