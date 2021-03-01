@@ -44,7 +44,7 @@ MVC也是一种设计思想，主要就是MVC中的Controlled演变成MVVM中的
 
 利用`Object.defineProperty()`对数据进行劫持，设置一个监听器`Observer`，用来监听所有属性，如果属性上发生变化了，就需要告诉订阅者`Watcher`去更新数据，最后指令解析器`Compile`解析对应的指令，进而会执行对应的更新函数，从而更新视图，实现双向绑定。
 
-## 虚拟DOM
+## 虚拟 DOM
 
 操作 DOM 是很慢的，原因已经在浏览器渲染部分说过了。相较于 DOM 来说，操作 JS 对象会快很多，并且我们也可以通过 JS 来模拟 DOM
 
@@ -108,50 +108,3 @@ const ul = {
 1. 将 Virtual DOM 作为一个兼容层，让我们还能对接非 Web 端的系统，实现跨端开发。
 2. 同样的，通过 Virtual DOM 我们可以渲染到其他的平台，比如实现 SSR、同构渲染等等。
 3. 实现组件的高度抽象化
-
-## 路由原理
-
-前端路由的本质是**监听 URL 的变化**，然后匹配路由规则，显示相应的页面，并且无须刷新页面。目前前端使用的路由就只有两种实现方式
-
-- Hash 模式
-- History 模式
-
-### Hash 模式
-
-`www.test.com/#/` 就是 Hash URL，当 `#` 后面的哈希值发生变化时，可以通过 `hashchange` 事件来监听到 URL 的变化，从而进行跳转页面，并且无论哈希值如何变化，服务端接收到的 URL 请求永远是 `www.test.com`。
-
-```
-window.addEventListener('hashchange', () => {
-  // ... 具体逻辑
-})
-```
-
-Hash 模式相对来说更简单，并且兼容性也更好。
-
-### History 模式
-
-History 模式是 HTML5 新推出的功能，主要使用 `history.pushState` 和 `history.replaceState` 改变 URL。
-
-通过 History 模式改变 URL 同样不会引起页面的刷新，只会更新浏览器的历史记录。
-
-```javascript
-// 新增历史记录
-history.pushState(stateObject, title, URL)
-// 替换当前历史记录
-history.replaceState(stateObject, title, URL)
-```
-
-当用户做出浏览器动作时，比如点击后退按钮时会触发 `popState` 事件
-
-```javascript
-window.addEventListener('popstate', e => {
-  // e.state 就是 pushState(stateObject) 中的 stateObject
-  console.log(e.state)
-})
-```
-
-### 两种模式对比
-
-- Hash 模式只可以更改 `#` 后面的内容，History 模式可以通过 API 设置任意的同源 URL
-- History 模式可以通过 API 添加任意类型的数据到历史记录中，Hash 模式只能更改哈希值，也就是字符串
-- Hash 模式无需后端配置，并且兼容性好。History 模式在用户手动输入地址或者刷新页面的时候会发起 URL 请求，后端需要配置 `index.html` 页面用于匹配不到静态资源的时候.

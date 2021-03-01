@@ -1,9 +1,5 @@
 # CSS
 
-## 三种将CSS样式应用到元素上的方式有什么区别
-
-![](https://github.com/YiiChitty/FrontEndLearning/blob/master/img/css_01.png)
-
 ## 基本概念
 
 ### 流
@@ -31,7 +27,7 @@
 css的属性非常有意思，**正常流下，如果块级元素的`width`是个固定值，`margin`是`auto`，则`margin`会撑满剩下的空间；如果`margin`是固定值，`width`是`auto`，则`width`会撑满剩下的空间**。这就是流体布局的根本所在。
 
 >
-> 注意父元素`height: auto`会导致子元素`height: 100%`百分比失效。如果想要子元素的height:100%生效，那么父元素需要设定显式高度值；或者使用绝对定位。（绝对定位元素百分比根据padding box计算，非绝对定位元素百分比是根据content box计算）
+> 注意父元素`height: auto`会导致子元素`height: 100%`百分比失效。如果想要子元素的`height:100%`生效，那么父元素需要设定显式高度值；或者使用绝对定位。（绝对定位元素百分比根据padding box计算，非绝对定位元素百分比是根据content box计算）
 
 ### 盒模型（盒尺寸）
 
@@ -43,7 +39,7 @@ w3c标准模型： `box-sizing: content-box` 此模式下，元素的宽度计�
 
 由于`content-box`在计算宽度的时候不包含`border pading`很烦人，而且又是默认值，可以采用以下代码重置样式：
 
-```
+```css
 :root {
   box-sizing: border-box;    
 }
@@ -56,9 +52,7 @@ w3c标准模型： `box-sizing: content-box` 此模式下，元素的宽度计�
 
 外在盒子是决定元素排列方式的盒子，即决定盒子具有块级特性还是内联特性的盒子。外在盒子负责结构布局。
 
-内在盒子是决定元素内部一
-
-些属性是否生效的盒子。内在盒子负责内容显示。
+内在盒子是决定元素内部一些属性是否生效的盒子。内在盒子负责内容显示。
 
 如 `display: inline-table;` 外在盒子就是`inline`，内在盒子就是`table`。外在盒子决定了元素要像内联元素一样并排在一排显示，内在盒子则决定了元素可以设置宽高、垂直方向的margin等属性。
 
@@ -127,7 +121,7 @@ body#god span#test {width: 250px;}
 在css中，`!important`的权重相当的高，但是由于宽高会被`max-width`/`min-width`覆盖，所以有时`!important`会失效。
 
 ```css
-width: 100px!important;
+width: 100px !important;
 min-width: 200px;
 ```
 
@@ -162,8 +156,8 @@ CSS中的`content`属性主要用于伪元素`:before/:after`中。
   ```
 
   ```cs
-  .box{width:200px;}
-  .b1{padding:10% 50%;background:red}
+  .box {width:200px;}
+  .b1 {padding:10% 50%;background:red}
   ```
 
   能生成100*20的矩形。
