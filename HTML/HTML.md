@@ -1,45 +1,5 @@
 # HTML
 
-<br />
-
-## XHTML和HTML的区别
-
-- 文档顶部的document不同XHTML顶部规定了DTD写法
-- HTML元素必须正确的嵌套，属性需要引号需要小写
-- XHTML结合了XML和HTML，结合了XML的传输和存储数据和HTML的简单特性
-
-## 常用的浏览器及其内核
-
-首先就是**五大浏览器**：IE、Chrome、safari、Firefox、Opear
-内核：  
-- IE-Trident
-- FireFox-Gecko
-- Chrome和Safari-webkit
-- 再者就是360和搜狗这种就是有**极速模式和兼容模式**：极速-webkit，兼容-Trident
-
-## HTML布局元素分类以及场景
-
-**内联元素**：span、a、strong、i、em、br、input、textarea
-- 本身的属性：display:inline
-- 和其他元素在一行显示，不可以直接控制宽、高，但是可以设置内外边距
-- 一般用于宽高由内容定义的情况
-
-**块级元素**：div、h、hr、ol、li、dl、table、from
-- 本身的属性：display:block
-- 独占一行显示，每个块级都会从新的一行开始，可以直接控制宽高
-- 不设置宽度的情况下宽度为父元素的宽度
-- 一般用于布局等需要指定宽高的情况
-
-## 两个a标签之间出现空格
-
-一般这种情况就是两个a标签在代码编写的时候存在空格
-- **解决办法**就是不写在一行
-
-## b标签和strong标签的区别
-
-- b标签主要就是为了加粗而加粗，但是strong是为了标明重点而加粗
-容易理解的场景就是在使用阅读设备阅读的时候strong会重读
-
 ## meta元素都有什么
 
 - 元数据：用来构建HTML文档的基本结构，以及如何处理文档向浏览器提供信息和指示，本身不是文档内容，但是提供了后面文档的信息。也就是说提供了网站的信息
@@ -63,32 +23,14 @@
 </head>
 ```
 
-常见的meta属性
-```html
-  <!-- 声明文档使用的字符编码 -->
-  <meta charset='utf-8'>
-  <!-- 优先使用 IE 最新版本和 Chrome -->
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-  <!-- 页面描述 -->
-  <meta name="description" content="不超过150个字符"/>
-  <!-- 页面关键词 -->
-  <meta name="keywords" content=""/>
-  <!-- 网页作者 -->
-  <meta name="author" content="name, email@gmail.com"/>
-  <!-- 搜索引擎抓取 -->
-  <meta name="robots" content="index,follow"/>
-  <!-- 为移动设备添加 viewport -->
-  <meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
-```
-
 ## HTML5有哪些新特性
 
-- **语义化标签** <br/>
+- **语义化标签** 
 8组：header、nav、footer、section、aside、artice、detailes、summary、dialog（对话框）
-- **智能表单** <br/>
-1.input输入类型增多<br/>
-color(颜色选取)、date、datetime（UTC时间）、datetime-local（日期时间无时区）、email、month、number、range（一定范围内数字值）、search、tel（电话号码）、time、url、week <br/>
-2.新增表单元素 <br/>
+- **智能表单** 
+1.input输入类型增多
+color(颜色选取)、date、datetime（UTC时间）、datetime-local（日期时间无时区）、email、month、number、range（一定范围内数字值）、search、tel（电话号码）、time、url、week
+2.新增表单元素
 datalist（输入域选项列表）keygen(验证用户)、output（不同类型输出）
 3.新增表单属性
 placehoder（提示语）、required（boolean，不能为空）、pattern(正则)、min/max、step(合法数字间隔）、height/width(image高宽)、autofocus(boolean，自动获取焦点)、mutiple（boolean,多选）
@@ -96,4 +38,82 @@ placehoder（提示语）、required（boolean，不能为空）、pattern(正�
 ## src和href的区别
 
 - href指向网络资源位置，建立当前文档和资源的连接，一般用于超链接
-- src将资源放入当前的文档，在请求src资源的时候会将指向的资源下载并应用到文档中，比如说js、图片等等元素，浏览器解析到该元素的时候会暂停其他资源的下载和处理，类似于将资源嵌入到了标签内，这也是js放在底部的一个原因
+- src将资源放入当前的文档，在请求src资源的时候会将指向的资源下载并应用到文档中，比如说js、图片等等元素
+
+## javaScript脚本的执行
+
+- js脚本的执行和外链脚本的加载(先加载、执行脚本再解析html)都是阻塞HTML的解析
+- 外链的script加载时并行的
+
+## async和defer的区别
+
+```html
+<script async/defer></script>
+```
+
+共同点：
+
+加上async或者defer属性的脚本的**加载过程**都不会阻塞HTML的解析
+
+不同点：
+
+- async属性。脚本加载完成之后立刻开始脚本的执行，停止对HTML的解析，脚本执行完之后再继续HTML的解析
+- defer。等整个HTML文档都解析完了，基本开始执行
+
+![defer and async](https://image-static.segmentfault.com/215/179/2151798436-59da4801c6772_articlex)
+
+## DOMContentLoaded和Load的区别
+
+DOMContentLoaded：当初始的HTML文档完全被加载和解析之后DOMContentLoaded事件触发，不需要等样式和图像加载完成
+
+Load：当一个资源以及依赖的资源加载完成时，触发Load事件
+
+HTML解析完成就会触发DOMContentLoaded（network的蓝线），所有的资源加载完成之后，load事件才会触发（network的红线）
+
+## docetype
+
+Docetype声明位于文档的最前面，处于HTML标签前面，告知浏览器的解析器，当前文档的类型规范
+
+## 元素拖拽
+
+```html
+<style>
+        .contain {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+            background: lightblue;
+        }
+
+        .el {
+            width: 50px;
+            height: 50px;
+            background: lightcoral;
+        }
+</style>
+
+<body>
+    <div class="contain"></div>
+    <div class="el" draggable="true"></div> <!-- 使元素能够被拖拽 -->
+    <script>
+        /**
+         * 将要拖拽的元素设置允许拖拽，赋予dragstart事件将id转换成数据保存
+         *为容器添加dragsover属性阻止浏览器默认事件，允许元素放置，赋予drop放置的位置
+        **/
+        const contain = document.querySelector('.contain')
+        const el = document.querySelector('.el')
+        el.addEventListener('dragstart', (e) => { // 当元素被拖拽时触发
+            console.log(e.target); // 被拖拽元素
+            e.dataTransfer.setData('message', 'hello')
+        })
+        contain.addEventListener('dragover', (e) => {
+            e.preventDefault()
+        })
+        contain.addEventListener('drop', (e) => {
+            e.preventDefault()
+            console.log(e.dataTransfer.getData('message'));
+        })
+    </script>
+</body>
+```
+
