@@ -2,7 +2,11 @@
 
 ### 什么是Promise？
 
-`Promise` 是异步编程的一种解决方案。**所谓 Promise，简单来说就像一个容器，里面保存着某个未来才会结束的事件的结果**。从语法上说，Promise是一个对象，从它可以获取异步操作的消息。Promise提供统一的API，各种异步操作都可以用同样的方法进行处理，让开发者不用再关注时序和底层的结果。Pomise包括三种状态：分别是 pending等待中、resolved完成了、rejected拒绝了。且一旦状态改变就不能再次改变，具有不受外界影响和不可逆两个特点。
+`Promise` 是异步编程的一种解决方案。**所谓 Promise，简单来说就像一个容器，里面保存着某个未来才会结束的事件的结果**。从语法上说，Promise是一个对象，代表了一个异步操作的最终完成或者失败。Pomise包括三种状态：分别是 pending等待中、fulfilled完成了、rejected拒绝了。且一旦状态改变就不能再次改变，具有不受外界影响和不可逆两个特点。
+
+个人理解：通过异步调用实现同步效果（同步：上一个任务出结果之后下一个任务才可以执行）
+
+异步调用：可以无须等待被调用函数的返回值就让操作进行的方法
 
 ### Promise常用API
 
@@ -140,10 +144,6 @@ getPObj(1).then(function(data){
 ```
 
 在每个回调执行完成后，再返回一个新的Promise对象，继续下一次操作，这就实现了嵌套流程的控制。
-
-Pomise有三种状态，分别是pending(进行中)，resolved(完成了)，rejected(拒绝了)，一旦达到相应的状态，就会回调相应的方法。至于什么是完成状态，什么是拒绝状态，可以自己按照实际情况自定义。
-
-![](https://github.com/YiiChitty/FrontEndLearning/blob/master/img/Promise_01.png)
 
 Promise 实现是链式调用，也就是说每次调用 then()之后返回的都是一个Promise，并且是一个全新的 Promise，原因也是因为状态不可变。
 
@@ -526,8 +526,6 @@ MyPromise.protype.then=function(onFulfilled,onRejected){
   })
   ```
 
-
-
 以上是简单版的Promise实现流程，合并起来的代码就是
 
 ```javascript
@@ -564,7 +562,7 @@ function MyPromise(fn){
         reject(e)
     }
 }
-MyPromise.protype.then=function(onFulfilled,onRejected){
+MyPromise.prototype.then=function(onFulfilled,onRejected){
     const that=this
     onFulfilled=typeof onFulfilled ==='function'? inFulfilled:v=>v
     OnRejected=typeof onRejected ==='function' ? onRejected:e=>{throw e}
@@ -580,184 +578,6 @@ MyPromise.protype.then=function(onFulfilled,onRejected){
     }
 }
 ```
-
-### 实现一个符合Promise/A+ 规范的Promise
-
-#### 先改造一下reject和resolve
-
-```javascript
-function resolve(value){
-    if(value instanceof MyPromise){
-        return value.then(resolve,reject)
-    }
-    setTimeout(()=>{
-       if(that.state===PENDING){
-           that.state=RESOLVED
-           that.value=value
-           that.resolvedCallbacks.map(cb=>cb(that.value))
-       } 
-    },0)
-}
-function reject(value){
-    setTimeout(()=>{
-        if(that.state===PENDING){
-            that.value=value
-            that.state=REJECTED
-            that.rejectedCallbacks.map(cb=>cb(that.value))
-        }
-    },0)
-}
-```
-
-- 对于 `resolve` 函数来说，首先需要判断传入的值是否为 `Promise` 类型
-- 为了保证函数执行顺序，需要将两个函数体代码使用 `setTimeout` 包裹起来
-
-### 改造then
-
-首先我们需要新增一个变量 promise2，因为每个then函数都需要返回一个新的 Promise 对象，变量用于保存新的返回对象，然后我们先来改造判断等待态的逻辑。
-
-```javascript
-if(that.state===PENDING){
-    return (promise2=new MyPromise((resolve,reject)=>{
-        that.resolveCallbacks.push(()=>{
-            try{
-                const x=onFulfilled(that.value)
-                resolutionProcedure(promise2,x,resolve,reject)
-            }catch(e){
-                throw e
-            }
-        })//push关闭
-        that.rejectedCallback.push(()=>{
-            try{
-                const x=onRejected(that.value)
-                resolutionProcedure(promise2,x,resolve,reject)
-            }catch(e){
-                throw e
-            }
-        })//push关闭
-    }))//return关闭
-}
-```
-
-- 首先我们返回了一个新的 Promise对象，并在Promise中传入了一个函数
-- 函数的基本逻辑还是和之前一样，往回调数组中push函数
-- 同样，在执行函数的过程中可能会遇到错误，所以使用了 `try...catch`包裹
-- 规范规定，执行 onFulfilled 或者 onRejected 函数时会返回一个 x，并且执行 Promise解决过程，这是为了不同的 Promise 都可以兼容使用，比如 JQuery 的 Promise 能兼容 ES6 的Promise
-
-#### 改造判断执行状态逻辑
-
-```javascript
-if(that.state===RESOLVED){
-	return (promise2 =new MyPromise((resolve,reject)=>{
-        setTimeout(()=>{
-            try{
-                const x=onFulfilled(that.value)
-                resolutionProcedure(promise2,x,resolve,reject)
-            }catch(reason){
-                reject(reason)
-            }
-        })
-    }))//return
-}
-if(that.state===REJECTED){
-	return (promise2 =new MyPromise((resolve,reject)=>{
-        setTimeout(()=>{
-            try{
-                const x=onRejected(that.value)
-                resolutionProcedure(promise2,x,resolve,reject)
-            }catch(reason){
-                reject(reason)
-            }
-        })
-    }))//return
-}
-```
-
-- 其实大家可以发现这段代码和判断等待态的逻辑基本一致，无非是传入的函数的函数体需要异步执行，这也是规范规定的
-
-#### 实现兼容多种Promise的resolutionProcedure函数
-
-```javascript
-function resolutionProcedure(promise2, x, resolve, reject) {
-  if (promise2 === x) {
-    return reject(new TypeError('Error'))
-  }
-}
-```
-
-首先规范规定了x不能与promise相等，这样会发生循环引用的问题.
-
-> 比如如下代码
->
-> ```javascript
-> let p = new MyPromise((resolve, reject) => {
-> resolve(1)
-> })
-> let p1 = p.then(value => {
-> return p1
-> })
-> ```
-
-然后需要判断x的类型
-
-```javascript
-if (x instanceof MyPromise) {
-    x.then(function(value) {
-        resolutionProcedure(promise2, value, resolve, reject)
-    }, reject)
-}
-```
-
-这里的代码是完全按照规范实现的。如果x为Promise的话，需要判断以下几个情况：
-
-1. 如果x处于等待态，Promise需保持为等待态直至x被执行或拒绝
-2. 如果x处于其他状态，则用相同的值处理Promise
-
-当然以上这些是规范需要我们判断的情况，实际上我们不判断状态也是可行的。
-
-
-
-接下来我们继续按照规范来实现剩余的代码
-
-```javascript
-let called = false
-if (x !== null && (typeof x === 'object' || typeof x === 'function')) {
-  try {
-    let then = x.then
-    if (typeof then === 'function') {
-      then.call(
-        x,
-        y => {
-          if (called) return
-          called = true
-          resolutionProcedure(promise2, y, resolve, reject)
-        },
-        e => {
-          if (called) return
-          called = true
-          reject(e)
-        }
-      )
-    } else {
-      resolve(x)
-    }
-  } catch (e) {
-    if (called) return
-    called = true
-    reject(e)
-  }
-} else {
-  resolve(x)
-}
-```
-
-- 首先创建一个变量 `called` 用于判断是否已经调用过函数
-- 然后判断 `x` 是否为对象或者函数，如果都不是的话，将 `x` 传入 `resolve` 中
-- 如果 `x` 是对象或者函数的话，先把 `x.then` 赋值给 `then`，然后判断 `then` 的类型，如果不是函数类型的话，就将 `x` 传入 `resolve` 中
-- 如果 `then` 是函数类型的话，就将 `x` 作为函数的作用域 `this` 调用之，并且传递两个回调函数作为参数，第一个参数叫做 `resolvePromise` ，第二个参数叫做 `rejectPromise`，两个回调函数都需要判断是否已经执行过函数，然后进行相应的逻辑
-- 以上代码在执行的过程中如果抛错了，将错误传入 `reject` 函数中
-
-以上就是符合 Promise/A+ 规范的实现了,面试的时候这样写肯定不现实，所以推荐简化版。
 
 ### 面试手写Promise版本
 
@@ -778,7 +598,6 @@ function Promise(executor) {
         if (self.status == "pending") {
             self.value  = value;
             self.status = "resolved";
-            
             self.onFullFilledCallbacks.forEach(onFulFilled => onFulFilled());
         }
     }
@@ -787,7 +606,6 @@ function Promise(executor) {
         if (self.status == "pending") {
             self.reason = reason;
             self.status = "rejected";
-            
             self.onRejectedCallbacks.forEach(onRejected => onRejected());
         }
     }
