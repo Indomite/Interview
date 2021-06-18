@@ -8,6 +8,6 @@ git add -A
 git commit -m "`date +%Y.%m.%d`"
 
 # 如果发布到 https://<USERNAME>.github.io
-git push -f git@github.com:Indomite/StudySchedule.git master
+git push -f git@github.com:Indomite/IndomiteNotes.git master
 
 cd -
