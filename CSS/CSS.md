@@ -902,3 +902,7 @@ div.active{
 - 可维护性差 
 - 不够语义化 
 - 加载速度慢，嵌套表多 
+
+### CSS模块化
+
+https://juejin.cn/post/6844904034281734151#heading-9
