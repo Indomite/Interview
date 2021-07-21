@@ -116,3 +116,13 @@ Docetype声明位于文档的最前面，处于HTML标签前面，告知浏览�
     </script>
 </body>
 ```
+
+// 获取地理位置
+```HTML
+navigator.geolocation.getCurrentPosition((position) => {
+    const {
+        latitude, // 纬度 
+        longitude // 经度
+    } = position.coords
+});
+```
